@@ -27,6 +27,9 @@ const nextConfig = {
         pathname: '/steam/apps/**',
       }
     ],
+    // Don't try to optimize Steam images - they often 404
+    unoptimized: false,
+    dangerouslyAllowSVG: true
   },
 }
 

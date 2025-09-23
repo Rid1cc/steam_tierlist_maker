@@ -1,10 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import Header from '@/components/Header'
+import GameImage from '@/components/GameImage'
 import TierList from '@/components/TierList'
 import GameLibrary from '@/components/GameLibrary'
+import SteamImport from '@/components/SteamImport'
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core'
 import { steamGames } from '@/data/steamGames'
 import { Game, TierData } from '@/types/game'
@@ -22,6 +23,7 @@ export default function Home() {
   const [tiers, setTiers] = useState<TierData>(initialTiers)
   const [availableGames, setAvailableGames] = useState<Game[]>(steamGames)
   const [activeGame, setActiveGame] = useState<Game | null>(null)
+  const [showSteamImport, setShowSteamImport] = useState(false)
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event
@@ -98,10 +100,19 @@ export default function Home() {
     setAvailableGames(steamGames)
   }
 
+  const handleImportSteam = () => {
+    setShowSteamImport(true)
+  }
+
+  const handleGamesImported = (games: Game[]) => {
+    setAvailableGames(games)
+    setTiers(initialTiers) // Reset tiers when importing new games
+  }
+
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <main className="min-h-screen">
-        <Header onReset={resetTierList} />
+        <Header onReset={resetTierList} onImportSteam={handleImportSteam} />
         <div className="container mx-auto px-4 py-8">
           <TierList tiers={tiers} />
           <GameLibrary games={availableGames} />
@@ -110,16 +121,25 @@ export default function Home() {
       <DragOverlay>
         {activeGame && (
           <div className="game-item bg-steam-blue rounded-lg overflow-hidden shadow-lg opacity-90 w-[100px] h-[100px] relative">
-            <Image
+            <GameImage
               src={activeGame.image}
               alt={activeGame.name}
               fill
               className="object-cover"
               sizes="100px"
+              gameName={activeGame.name}
             />
           </div>
         )}
       </DragOverlay>
+      
+      {/* Steam Import Modal */}
+      {showSteamImport && (
+        <SteamImport
+          onGamesImported={handleGamesImported}
+          onClose={() => setShowSteamImport(false)}
+        />
+      )}
     </DndContext>
   )
 }

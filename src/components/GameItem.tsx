@@ -1,6 +1,6 @@
 import { useDraggable } from '@dnd-kit/core'
 import { Game } from '@/types/game'
-import Image from 'next/image'
+import GameImage from './GameImage'
 
 interface GameItemProps {
   game: Game
@@ -32,16 +32,13 @@ export default function GameItem({ game }: GameItemProps) {
       }`}
     >
       <div className="relative w-[100px] h-[100px]">
-        <Image
+        <GameImage
           src={game.image}
           alt={game.name}
           fill
-          className="object-cover"
+          className="w-full h-full object-cover"
           sizes="100px"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement
-            target.src = '/api/placeholder/100/100'
-          }}
+          gameName={game.name}
         />
         <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
           <p className="text-white text-xs text-center px-1 font-semibold">
