@@ -7,6 +7,9 @@ const nextConfig = {
     },
   },
   
+  // Cloudflare Pages configuration
+  trailingSlash: true,
+  skipTrailingSlashRedirect: true,
 
   images: {
     remotePatterns: [

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { steamCache, rateLimiter } from '@/lib/cache'
+
+export const runtime = 'edge';
 
 interface FamilyApp {
   appid: number
@@ -35,32 +36,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Rate limiting - max 3 requests per minute per IP (family API is more intensive)
-    const clientIP = request.headers.get('x-forwarded-for') || 'unknown'
-    if (!rateLimiter.isAllowed(`family_${clientIP}`, 3, 1)) {
-      const resetTime = rateLimiter.getResetTime(`family_${clientIP}`)
-      return NextResponse.json(
-        { 
-          error: 'Rate limit exceeded. Please try again later.',
-          resetTime: resetTime ? new Date(resetTime).toISOString() : null
-        }, 
-        { status: 429 }
-      )
-    }
-
-    // Check cache first (15 minutes TTL - shorter because tokens can expire)
-    const tokenHash = webApiToken.slice(-8) // Use last 8 chars for privacy
-    const cacheKey = `family_${tokenHash}_${familyGroupId}`
-    const cachedData = steamCache.get(cacheKey)
-    if (cachedData) {
-      console.log(`[STEAM FAMILY API] Cache HIT for key: ${cacheKey}`)
-      return NextResponse.json({
-        ...cachedData,
-        cached: true
-      })
-    }
-    
-    console.log(`[STEAM FAMILY API] Cache MISS for key: ${cacheKey} - fetching from Steam API`)
+    console.log(`[STEAM FAMILY API] Fetching family games directly from Steam API`)
 
     // Fetch family shared games from Steam API
     const steamApiUrl = `https://api.steampowered.com/IFamilyGroupsService/GetSharedLibraryApps/v1/?access_token=${webApiToken}&family_groupid=${familyGroupId}&include_own=true&include_excluded=false&include_free=true&include_non_games=false`
@@ -109,9 +85,6 @@ export async function GET(request: NextRequest) {
       familyGroupId,
       timestamp: Date.now()
     }
-
-    // Cache the response for 15 minutes (shorter TTL for family API)
-    steamCache.set(cacheKey, responseData, 15)
 
     return NextResponse.json(responseData)
 

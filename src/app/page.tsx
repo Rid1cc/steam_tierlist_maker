@@ -151,6 +151,24 @@ export default function Home() {
           onClose={() => setShowSteamImport(false)}
         />
       )}
+      
+      {/* Footer */}
+      <footer className="mt-8 py-6 border-t border-steam-lightblue/20">
+        <div className="container mx-auto px-4 text-center">
+          <p className="text-steam-lightblue/60 text-sm">
+            Made with ❤️ by{' '}
+            <span className="relative inline-block font-semibold text-steam-blue hover:text-transparent bg-clip-text hover:bg-gradient-to-r hover:from-violet-500 hover:via-orange-500 hover:to-violet-500 transition-all duration-500 hover:animate-pulse cursor-pointer">
+              Ridicc
+            </span>
+          </p>
+          <p className="text-steam-lightblue/40 text-xs mt-1">
+            Steam Tierlist Maker • {new Date().getFullYear()}
+          </p>
+          <p className="text-steam-lightblue/30 text-xs mt-2">
+            All game data and images are property of Valve Corporation and Steam®
+          </p>
+        </div>
+      </footer>
     </DndContext>
   )
 }

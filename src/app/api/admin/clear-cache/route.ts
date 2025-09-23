@@ -1,14 +1,13 @@
-import { NextResponse } from 'next/server'
-import { steamCache } from '@/lib/cache'
+import { NextRequest, NextResponse } from 'next/server';
+
+export const runtime = 'edge';
 
 export async function POST() {
   try {
-    // Clear the cache
-    steamCache.clear()
-    
+    // No cache to clear in simplified version
     return NextResponse.json({ 
       success: true, 
-      message: 'Cache cleared successfully',
+      message: 'No cache to clear (simplified version)',
       timestamp: new Date().toISOString()
     })
   } catch (error) {
@@ -22,12 +21,10 @@ export async function POST() {
 
 export async function GET() {
   try {
-    // Get cache stats
-    const stats = steamCache.getStats()
-    
+    // No cache stats in simplified version
     return NextResponse.json({ 
       success: true, 
-      stats,
+      stats: { message: 'No cache in simplified version' },
       timestamp: new Date().toISOString()
     })
   } catch (error) {

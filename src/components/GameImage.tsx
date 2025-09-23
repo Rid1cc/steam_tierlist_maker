@@ -44,26 +44,37 @@ export default function GameImage({ src, alt, className = '', sizes, fill = fals
           style={fill ? { position: 'absolute', inset: 0 } : undefined}
         />
       )}
-      <img
-        src={src}
-        alt={alt}
-        className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity`}
-        style={fill ? { 
-          position: 'absolute', 
-          inset: 0, 
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover' 
-        } : { 
-          width: '100%',
-          height: '100%',
-          objectFit: 'cover' 
-        }}
-        sizes={sizes}
-        onError={handleError}
-        onLoad={handleLoad}
-        loading="lazy"
-      />
+      {src ? (
+        <img
+          src={src}
+          alt={alt}
+          className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity`}
+          style={fill ? { 
+            position: 'absolute', 
+            inset: 0, 
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover' 
+          } : { 
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover' 
+          }}
+          sizes={sizes}
+          onError={handleError}
+          onLoad={handleLoad}
+          loading="lazy"
+        />
+      ) : (
+        <div 
+          className={`bg-steam-blue flex items-center justify-center text-white text-center p-2 ${className}`}
+          style={fill ? { position: 'absolute', inset: 0 } : undefined}
+        >
+          <div className="text-xs font-medium leading-tight">
+            {gameName.split(' ').slice(0, 3).join(' ')}
+          </div>
+        </div>
+      )}
     </>
   )
 }

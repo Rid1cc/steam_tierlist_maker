@@ -1,5 +1,8 @@
 .github
 public
+.wrangler
+_headers
+wrangler.toml
 
 # Dependencies
 node_modules/

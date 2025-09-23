@@ -47,6 +47,13 @@ export function useSteamApi(): UseSteamApiReturn {
 
     try {
       const response = await fetch(`/api/steam/user?steamId=${encodeURIComponent(steamId)}`)
+      
+      if (!response.ok) {
+        const text = await response.text()
+        console.error('API Response:', text)
+        throw new Error(`API Error (${response.status}): ${text}`)
+      }
+      
       const data = await response.json()
 
       if (!response.ok) {
@@ -93,6 +100,13 @@ export function useSteamApi(): UseSteamApiReturn {
 
         // Then fetch games
         const response = await fetch(`/api/steam/games?steamId=${encodeURIComponent(steamId)}`)
+        
+        if (!response.ok) {
+          const text = await response.text()
+          console.error('Games API Response:', text)
+          throw new Error(`Games API Error (${response.status}): ${text}`)
+        }
+        
         const data = await response.json()
 
         if (!response.ok) {
