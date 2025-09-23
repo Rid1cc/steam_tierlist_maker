@@ -29,9 +29,6 @@ export default function Header({ onReset, onImportSteam }: HeaderProps) {
             >
               Reset Tierlist
             </button>
-            <button className="bg-steam-orange hover:bg-orange-600 text-white font-bold py-2 px-4 rounded transition-colors">
-              Export Image
-            </button>
           </div>
         </div>
       </div>

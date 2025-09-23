@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Header from '@/components/Header'
 import GameImage from '@/components/GameImage'
 import TierList from '@/components/TierList'
 import GameLibrary from '@/components/GameLibrary'
 import SteamImport from '@/components/SteamImport'
+import ExportButton from '@/components/ExportButton'
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core'
 import { steamGames } from '@/data/steamGames'
 import { Game, TierData } from '@/types/game'
@@ -24,6 +25,7 @@ export default function Home() {
   const [availableGames, setAvailableGames] = useState<Game[]>(steamGames)
   const [activeGame, setActiveGame] = useState<Game | null>(null)
   const [showSteamImport, setShowSteamImport] = useState(false)
+  const tierListRef = useRef<HTMLDivElement>(null)
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event
@@ -114,7 +116,16 @@ export default function Home() {
       <main className="min-h-screen">
         <Header onReset={resetTierList} onImportSteam={handleImportSteam} />
         <div className="container mx-auto px-4 py-8">
-          <TierList tiers={tiers} />
+          {/* Export Button */}
+          <div className="mb-6 flex justify-end">
+            <ExportButton tierListRef={tierListRef} />
+          </div>
+          
+          {/* Tier List - wrapped in div with ref for export */}
+          <div ref={tierListRef} className="tier-list-export bg-steam-darkgray p-6 rounded-lg mb-8">
+            <TierList tiers={tiers} />
+          </div>
+          
           <GameLibrary games={availableGames} />
         </div>
       </main>

@@ -6,6 +6,8 @@ const nextConfig = {
       '*.svg': ['@svgr/webpack'],
     },
   },
+  
+
   images: {
     remotePatterns: [
       {

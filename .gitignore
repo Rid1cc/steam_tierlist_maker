@@ -2,6 +2,7 @@
 public
 
 # Dependencies
+wrangler.toml
 node_modules/
 .pnp
 .pnp.js
