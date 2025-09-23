@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+.steam-bg {
+  background: linear-gradient(135deg, #1b2838 0%, #171a21 100%);
+}
+
+.tier-row {
+  min-height: 120px;
+  border: 2px solid #2a475e;
+  border-radius: 8px;
+}
+
+.game-item {
+  transition: transform 0.2s ease-in-out;
+}
+
+.game-item:hover {
+  transform: scale(1.05);
+}
+
+.dragging {
+  opacity: 0.5;
+}
+
+@layer components {
+  .btn-steam {
+    @apply bg-steam-green hover:bg-green-600 text-white font-bold py-2 px-4 rounded transition-colors;
+  }
+  
+  .card-steam {
+    @apply bg-steam-blue border border-steam-lightblue rounded-lg shadow-lg;
+  }
+}
