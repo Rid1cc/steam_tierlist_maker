@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "wrangler pages deploy",
-    "deploy:preview": "wrangler pages deploy --env preview",
-    "deploy:production": "wrangler pages deploy --env production"
+    "deploy": "wrangler pages deploy .next",
+    "deploy:preview": "wrangler pages deploy .next",
+    "deploy:production": "wrangler pages deploy .next"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
