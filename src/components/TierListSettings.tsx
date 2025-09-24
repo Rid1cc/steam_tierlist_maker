@@ -251,7 +251,7 @@ export default function TierListSettings({
             {selectedTierForColor && (
               <div>
                 <h3 className="text-sm font-medium text-white mb-3">
-                  Choose Color for Tier "{selectedTierForColor}"
+                  Choose Color for Tier &quot;{selectedTierForColor}&quot;
                 </h3>
                 <div className="grid grid-cols-3 gap-2 mb-3">
                   {tierColors.map((color) => (
