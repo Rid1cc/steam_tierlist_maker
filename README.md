@@ -2,7 +2,7 @@
 
 A modern web application for creating custom tier lists of your Steam games. Built with Next.js, TypeScript, and Tailwind CSS.
 
-## ✨ Features
+## Features
 
 - **Steam Integration**: Import games from your Steam library (public profiles) or use Family Sharing with Web API token
 - **Drag & Drop**: Intuitive drag and drop interface with sortable positioning
@@ -12,11 +12,11 @@ A modern web application for creating custom tier lists of your Steam games. Bui
 - **Responsive**: Works perfectly on desktop and mobile devices
 - **Privacy-First**: All data stored locally, Web API tokens never logged or stored
 
-## 🚀 Live Demo
+## Live
 
 Visit [Steam Tierlist Maker](https://steam-tierlist-maker.pages.dev) to try it out!
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: Next.js 15, React 19, TypeScript
 - **Styling**: Tailwind CSS with custom Steam-themed colors
@@ -25,7 +25,7 @@ Visit [Steam Tierlist Maker](https://steam-tierlist-maker.pages.dev) to try it o
 - **Deployment**: Cloudflare Pages with Edge Runtime
 - **API**: Steam Web API integration
 
-## 🏃‍♂️ Quick Start
+## Quick Start
 
 1. **Clone the repository**
    ```bash
@@ -49,10 +49,7 @@ Visit [Steam Tierlist Maker](https://steam-tierlist-maker.pages.dev) to try it o
    npm run dev
    ```
 
-5. **Open your browser**
-   Navigate to `http://localhost:3000`
-
-## 🎮 How to Use
+## How to Use
 
 1. **Import Games**: Click "Import Steam Games" and choose:
    - **Standard Import**: Enter your Steam ID or profile URL (profile must be public)
@@ -73,7 +70,7 @@ Visit [Steam Tierlist Maker](https://steam-tierlist-maker.pages.dev) to try it o
 
 5. **Export**: Click "Export as Image" to download your tier list as PNG
 
-## 🔧 Development
+## Development
 
 ### Code Structure
 
@@ -91,21 +88,6 @@ Visit [Steam Tierlist Maker](https://steam-tierlist-maker.pages.dev) to try it o
 - **`GameLibrary.tsx`** - Game library with filtering/sorting
 - **`SteamImport.tsx`** - Steam game import modal
 
-### Recent Optimizations
-
-- ✅ Refactored drag & drop logic into smaller, reusable functions
-- ✅ Added `useCallback` hooks for performance optimization
-- ✅ Removed unused code and dependencies (cache system, old routes)
-- ✅ Improved Web API token security (POST instead of GET)
-- ✅ Added comprehensive code comments
-- ✅ Fixed ESLint issues and build warnings
-
-## 🔒 Privacy & Security
-
-- **Local Storage**: All tier list data stored locally in your browser
-- **Token Security**: Web API tokens sent securely via POST, never logged or stored
-- **Steam Compliance**: Fully compliant with Steam Web API Terms of Use
-- **No Tracking**: No analytics, cookies, or user tracking
 
 ## 📝 License
 
@@ -115,7 +97,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 - **Steam Web API** for game data
 - **Valve Corporation** for Steam platform
-- **Next.js Team** for the amazing React framework
+- **Next.js Team** for React framework
 - **@dnd-kit** for the drag and drop functionality
 
 ---

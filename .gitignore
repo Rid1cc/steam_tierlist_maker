@@ -1,5 +1,6 @@
 .github
-public
+public/_headers
+public/_redirects
 .wrangler
 _headers
 wrangler.toml
