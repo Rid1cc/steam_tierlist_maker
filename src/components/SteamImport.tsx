@@ -78,10 +78,6 @@ export default function SteamImport({ onGamesImported, onClose }: SteamImportPro
                 {loading ? 'Loading...' : 'Import'}
               </button>
             </div>
-            <p className="text-gray-400 text-sm mt-2">
-              Note: Profile must be public to import games<br/>
-              🚀 Results are cached for 30 minutes to reduce API usage
-            </p>
           </div>
         )}
 
@@ -116,8 +112,7 @@ export default function SteamImport({ onGamesImported, onClose }: SteamImportPro
                 <li>Copy the <code className="bg-blue-800 px-1 rounded">webapi_token</code> value</li>
                 <li>Paste it above</li>
               </ol>
-              <p className="mt-2 text-yellow-300">⚠️ This includes all family shared games, not just your own!</p>
-              <p className="mt-1 text-gray-300">🚀 Results cached for 15 minutes to reduce API usage</p>
+              <p/>
             </div>
           </div>
         )}
@@ -195,7 +190,10 @@ export default function SteamImport({ onGamesImported, onClose }: SteamImportPro
                   <li>Paste it above and click Import</li>
                 </ol>
                 <p className="mt-3 text-yellow-400">
-                  ⚠️ Your Steam profile must be set to Public for this to work
+                  ⚠️ Your Steam profile must be set to Public for this to work.
+                </p>
+                <p className="mt-3 text-yellow-400">
+                  ⚠️ This method includes only games user owns, not family shared games.
                 </p>
               </>
             ) : (

@@ -17,6 +17,7 @@ export interface TierData {
   C: Game[]
   D: Game[]
   F: Game[]
+  [key: string]: Game[] // Allow dynamic tier keys
 }
 
 export type TierKey = keyof TierData

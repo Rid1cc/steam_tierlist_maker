@@ -45,26 +45,36 @@ export default function GameImage({ src, alt, className = '', sizes, fill = fals
         />
       )}
       {src ? (
-        <img
-          src={src}
-          alt={alt}
+        <div
           className={`${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity`}
           style={fill ? { 
             position: 'absolute', 
             inset: 0, 
             width: '100%',
             height: '100%',
-            objectFit: 'cover' 
+            backgroundImage: `url(${src})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
           } : { 
             width: '100%',
             height: '100%',
-            objectFit: 'cover' 
+            backgroundImage: `url(${src})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat'
           }}
-          sizes={sizes}
-          onError={handleError}
-          onLoad={handleLoad}
-          loading="lazy"
-        />
+        >
+          <img
+            src={src}
+            alt={alt}
+            style={{ opacity: 0, width: '100%', height: '100%' }}
+            sizes={sizes}
+            onError={handleError}
+            onLoad={handleLoad}
+            loading="lazy"
+          />
+        </div>
       ) : (
         <div 
           className={`bg-steam-blue flex items-center justify-center text-white text-center p-2 ${className}`}

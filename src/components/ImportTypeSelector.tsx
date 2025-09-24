@@ -17,8 +17,8 @@ export default function ImportTypeSelector({ importType, onTypeChange }: ImportT
             className="w-4 h-4 text-steam-blue bg-steam-darkblue border-steam-lightblue focus:ring-steam-blue"
           />
           <div>
-            <span className="text-white font-medium">Standard API</span>
-            <p className="text-sm text-gray-400">Public games only (requires Steam ID)</p>
+            <span className="text-white font-medium">Standard</span>
+            <p className="text-sm text-gray-400">User library only (requires Steam ID)</p>
           </div>
         </label>
         
@@ -31,8 +31,8 @@ export default function ImportTypeSelector({ importType, onTypeChange }: ImportT
             className="w-4 h-4 text-steam-blue bg-steam-darkblue border-steam-lightblue focus:ring-steam-blue"
           />
           <div>
-            <span className="text-white font-medium">Family Sharing (All Games)</span>
-            <p className="text-sm text-gray-400">All games including shared (requires webapi_token)</p>
+            <span className="text-white font-medium">Family Sharing</span>
+            <p className="text-sm text-gray-400">User library + family shared games (requires webapi_token)</p>
           </div>
         </label>
       </div>

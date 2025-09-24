@@ -6,9 +6,10 @@ import SortableGameItem from './SortableGameItem'
 interface TierRowProps {
   tier: TierKey
   games: Game[]
+  customColor?: string
 }
 
-const tierColors = {
+const tierColors: Record<string, string> = {
   S: 'bg-tier-S',
   A: 'bg-tier-A', 
   B: 'bg-tier-B',
@@ -17,7 +18,7 @@ const tierColors = {
   F: 'bg-tier-F'
 }
 
-const tierLabels = {
+const tierLabels: Record<string, string> = {
   S: 'S - Legendary',
   A: 'A - Excellent',
   B: 'B - Good',
@@ -26,16 +27,28 @@ const tierLabels = {
   F: 'F - Poor'
 }
 
-export default function TierRow({ tier, games }: TierRowProps) {
+// Fallback color for custom tiers
+const getDefaultTierColor = (tier: string) => {
+  return tierColors[tier] || 'bg-steam-blue'
+}
+
+const getDefaultTierLabel = (tier: string) => {
+  return tierLabels[tier] || `${tier} - Custom`
+}
+
+export default function TierRow({ tier, games, customColor }: TierRowProps) {
   const { setNodeRef, isOver } = useDroppable({
-    id: tier,
+    id: String(tier),
   })
 
   return (
     <div className="flex mb-4">
       {/* Tier Label */}
-      <div className={`${tierColors[tier]} w-24 flex items-center justify-center text-black font-bold text-2xl rounded-l-lg border-2 border-r-0 border-steam-lightblue`}>
-        {tier}
+      <div 
+        className={`w-24 flex items-center justify-center text-black font-bold text-2xl rounded-l-lg border-2 border-r-0 border-steam-lightblue ${!customColor ? getDefaultTierColor(String(tier)) : ''}`}
+        style={customColor ? { backgroundColor: customColor } : undefined}
+      >
+        {String(tier)}
       </div>
       
       {/* Droppable Area */}

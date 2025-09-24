@@ -16,10 +16,11 @@ export default function ExportButton({ tierListRef }: ExportButtonProps) {
         button.setAttribute('disabled', 'true')
       }
 
-      // Configure html2canvas options
+            // Use html2canvas with minimal options to avoid artifacts
       const canvas = await html2canvas(tierListRef.current, {
         useCORS: true,
-        allowTaint: true
+        allowTaint: false,
+        logging: false
       })
 
       // Create download link

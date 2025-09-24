@@ -11,6 +11,7 @@ import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, DragOverEvent } 
 import { arrayMove } from '@dnd-kit/sortable'
 import { steamGames } from '@/data/steamGames'
 import { Game, TierData } from '@/types/game'
+import TierListSettings from '@/components/TierListSettings'
 
 const initialTiers: TierData = {
   S: [],
@@ -26,6 +27,8 @@ export default function Home() {
   const [availableGames, setAvailableGames] = useState<Game[]>(steamGames)
   const [activeGame, setActiveGame] = useState<Game | null>(null)
   const [showSteamImport, setShowSteamImport] = useState(false)
+  const [tierListName, setTierListName] = useState('My Steam Tier List')
+  const [tierColors, setTierColors] = useState<Record<string, string>>({})
   const tierListRef = useRef<HTMLDivElement>(null)
 
   const handleDragStart = (event: DragStartEvent) => {
@@ -243,19 +246,45 @@ export default function Home() {
     setTiers(initialTiers) // Reset tiers when importing new games
   }
 
+  const handleGamesReturnToAvailable = (games: Game[]) => {
+    setAvailableGames(prev => [...prev, ...games])
+  }
+
+  const handleTierColorChange = (tierKey: string, color: string) => {
+    setTierColors(prev => ({
+      ...prev,
+      [tierKey]: color
+    }))
+  }
+
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <main className="min-h-screen">
         <Header onReset={resetTierList} onImportSteam={handleImportSteam} />
         <div className="container mx-auto px-4 py-8">
-          {/* Export Button */}
-          <div className="mb-6 flex justify-end">
-            <ExportButton tierListRef={tierListRef} />
+          {/* Settings and Export */}
+          <div className="mb-6 flex justify-between items-center">
+            <h1 className="text-3xl font-bold text-white">{tierListName}</h1>
+            <div className="flex gap-3">
+              <TierListSettings 
+                tiers={tiers}
+                tierListName={tierListName}
+                onTiersChange={setTiers}
+                onTierListNameChange={setTierListName}
+                onGamesReturnToAvailable={handleGamesReturnToAvailable}
+                tierColors={tierColors}
+                onTierColorChange={handleTierColorChange}
+              />
+              <ExportButton tierListRef={tierListRef} />
+            </div>
           </div>
           
           {/* Tier List - wrapped in div with ref for export */}
-          <div ref={tierListRef} className="tier-list-export bg-steam-darkgray p-6 rounded-lg mb-8">
-            <TierList tiers={tiers} />
+          <div 
+            ref={tierListRef} 
+            className="tier-list-export bg-steam-darkgray p-6 rounded-lg mb-8"
+          >
+            <TierList tiers={tiers} tierColors={tierColors} />
           </div>
           
           <GameLibrary games={availableGames} />
