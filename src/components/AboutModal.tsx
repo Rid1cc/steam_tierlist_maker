@@ -117,8 +117,7 @@ export default function AboutModal({ onClose }: AboutModalProps) {
               <li>Drag & drop interface with sortable positioning</li>
               <li>Customizable tier colors and names</li>
               <li>Game library filtering and sorting</li>
-              <li>Export your tierlist as image or VDF file</li>
-              <li>Responsive design for all devices</li>
+              <li>Export your tierlist as image</li>
             </ul>
           </div>
 
@@ -150,7 +149,6 @@ export default function AboutModal({ onClose }: AboutModalProps) {
                 <span className="text-steam-green font-semibold">Libraries:</span>
                 <ul className="ml-4 list-disc list-inside">
                   <li>@dnd-kit for drag & drop</li>
-                  <li>html2canvas for export</li>
                   <li>Steam Web API</li>
                   <li>Cloudflare Pages</li>
                 </ul>
