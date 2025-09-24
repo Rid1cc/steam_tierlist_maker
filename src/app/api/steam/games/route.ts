@@ -126,7 +126,10 @@ export async function GET(request: NextRequest) {
         `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${game.appid}/header.jpg` :
         '', // Use same format as family API for consistency
       playtimeMinutes: game.playtime_forever,
-      playtimeHours: Math.round(game.playtime_forever / 60 * 10) / 10
+      playtimeHours: Math.round(game.playtime_forever / 60 * 10) / 10,
+      playtime: Math.round(game.playtime_forever / 60 * 10) / 10, // Add playtime field that UI expects
+      genre: '', // Default empty values to match Game interface
+      releaseYear: 0
     }))
 
     console.log(`[STEAM GAMES API] Successfully processed ${games.length} games`)

@@ -209,7 +209,16 @@ export default function Home() {
       ? availableGames[sourceIndex]
       : tiers[sourceContainer as keyof TierData][sourceIndex]
 
-    if (!draggedGame) return
+    if (!draggedGame) {
+      console.error('Dragged game not found:', { activeId, sourceContainer, sourceIndex })
+      return
+    }
+
+    console.log('Moving game between containers:', {
+      game: draggedGame.name,
+      from: sourceContainer,
+      to: destinationContainer
+    })
 
     // Remove from source
     if (sourceContainer === 'available') {
@@ -223,12 +232,18 @@ export default function Home() {
 
     // Add to destination
     if (destinationContainer === 'available') {
+      console.log('Adding game back to available games')
       setAvailableGames(prev => [...prev, draggedGame])
     } else if (destinationContainer in tiers) {
+      console.log('Adding game to tier:', destinationContainer)
       setTiers(prev => ({
         ...prev,
         [destinationContainer]: [...(prev[destinationContainer as keyof TierData] || []), draggedGame]
       }))
+    } else {
+      console.error('Unknown destination container:', destinationContainer)
+      // If destination is unknown, put the game back to available games to prevent loss
+      setAvailableGames(prev => [...prev, draggedGame])
     }
   }
 
