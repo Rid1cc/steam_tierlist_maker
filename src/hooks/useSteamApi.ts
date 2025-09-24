@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { Game } from '@/types/game'
 
+// Steam user data structure
 interface SteamUser {
   steamId: string
   username: string
@@ -12,6 +13,7 @@ interface SteamUser {
   accountCreated?: string
 }
 
+// Hook return interface
 interface UseSteamApiReturn {
   loading: boolean
   error: string | null
@@ -23,7 +25,7 @@ interface UseSteamApiReturn {
   clearError: () => void
 }
 
-// Simple client-side request deduplication
+// Request deduplication to prevent duplicate API calls
 const pendingRequests = new Map<string, Promise<any>>()
 
 export function useSteamApi(): UseSteamApiReturn {

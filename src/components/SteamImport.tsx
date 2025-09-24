@@ -128,7 +128,7 @@ export default function SteamImport({ onGamesImported, onClose }: SteamImportPro
                 <p className="text-sm mt-1">{error}</p>
                 {error.includes('Rate limit exceeded') && (
                   <p className="text-xs mt-2 text-red-300">
-                    💡 Try again in a few minutes. We cache results to reduce API calls and respect Steam&apos;s limits.
+                    💡 Try again in a few minutes. We respect Steam&apos;s API rate limits.
                   </p>
                 )}
                 {error.includes('Invalid or expired web API token') && (

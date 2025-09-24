@@ -53,17 +53,17 @@ export default function AboutModal({ onClose }: AboutModalProps) {
               
               <p>
                 <strong className="text-steam-green">Steam Integration:</strong> When you import games from Steam, we offer two methods: <br/>
-                • <strong>Standard Import:</strong> Uses Steam's public Web API to fetch publicly visible game libraries. Your Steam profile must be set to public. <br/>
+                • <strong>Standard Import:</strong> Uses Steam&apos;s public Web API to fetch publicly visible game libraries. Your Steam profile must be set to public. <br/>
                 • <strong>Family Sharing Import:</strong> Requires your personal Steam Web API token to access family shared games. This token provides authenticated access to your account data.
               </p>
               
               <p>
-                <strong className="text-steam-green">Data Processing:</strong> Game images are loaded directly from Steam's CDN. 
+                <strong className="text-steam-green">Data Processing:</strong> Game images are loaded directly from Steam&apos;s CDN. 
                 Tier list exports are generated locally in your browser using client-side processing.
               </p>
               
               <p>
-                <strong className="text-steam-green">Data Retention:</strong> Your tier lists and settings persist in your browser's local storage until you clear them manually. 
+                <strong className="text-steam-green">Data Retention:</strong> Your tier lists and settings persist in your browser&apos;s local storage until you clear them manually. 
                 No data is retained on our servers.
               </p>
               
@@ -73,17 +73,17 @@ export default function AboutModal({ onClose }: AboutModalProps) {
               </p>
               
               <p>
-                <strong className="text-steam-green">Your Rights:</strong> You can clear all locally stored data at any time by clearing your browser's local storage or resetting the tier list. 
+                <strong className="text-steam-green">Your Rights:</strong> You can clear all locally stored data at any time by clearing your browser&apos;s local storage or resetting the tier list. 
                 Your Steam Web API token is only used during import and is not persisted. No account registration is required to use this application.
               </p>
 
               <p>
-                <strong className="text-steam-green">Steam Web API Compliance:</strong> This application uses Steam Web API in accordance with Valve's terms of use. 
-                Your personal Web API token is kept confidential and used only as requested by you. Data retrieval follows Steam's rate limits and usage guidelines.
+                <strong className="text-steam-green">Steam Web API Compliance:</strong> This application uses Steam Web API in accordance with Valve&apos;s terms of use. 
+                Your personal Web API token is kept confidential and used only as requested by you. Data retrieval follows Steam&apos;s rate limits and usage guidelines.
               </p>
 
               <p>
-                <strong className="text-steam-green">Disclaimer:</strong> Steam data is provided "as is" without any warranties. 
+                <strong className="text-steam-green">Disclaimer:</strong> Steam data is provided &quot;as is&quot; without any warranties. 
                 We make no representations regarding the accuracy, completeness, or reliability of Steam data. 
                 Use of Steam data is at your own risk. Valve Corporation is not responsible for any issues arising from the use of this application.
               </p>
@@ -126,7 +126,7 @@ export default function AboutModal({ onClose }: AboutModalProps) {
           <div className="p-4 bg-steam-darkblue bg-opacity-50 rounded border border-steam-lightblue">
             <h3 className="text-steam-green font-bold text-lg mb-3">How to Use</h3>
             <ol className="text-sm space-y-2 list-decimal list-inside">
-              <li>Click "Import Steam Games" to load your Steam library</li>
+              <li>Click &quot;Import Steam Games&quot; to load your Steam library</li>
               <li>Drag games from the library to different tiers</li>
               <li>Use the settings panel to customize tiers and colors</li>
               <li>Export your finished tierlist when ready</li>

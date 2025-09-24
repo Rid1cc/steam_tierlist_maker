@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import Header from '@/components/Header'
 import GameImage from '@/components/GameImage'
 import TierList from '@/components/TierList'
@@ -8,12 +8,13 @@ import GameLibrary from '@/components/GameLibrary'
 import SteamImport from '@/components/SteamImport'
 import ExportButton from '@/components/ExportButton'
 import AboutModal from '@/components/AboutModal'
-import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, DragOverEvent } from '@dnd-kit/core'
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { steamGames } from '@/data/steamGames'
 import { Game, TierData } from '@/types/game'
 import TierListSettings from '@/components/TierListSettings'
 
+// Initial tier structure
 const initialTiers: TierData = {
   S: [],
   A: [],
@@ -21,6 +22,48 @@ const initialTiers: TierData = {
   C: [],
   D: [],
   F: []
+}
+
+// Helper function to find a game by ID in all available containers
+const findGameById = (gameId: number, availableGames: Game[], tiers: TierData): { game: Game | null, container: string, index: number } => {
+  // Check available games first
+  const availableIndex = availableGames.findIndex(game => game.id === gameId)
+  if (availableIndex !== -1) {
+    return { game: availableGames[availableIndex], container: 'available', index: availableIndex }
+  }
+
+  // Check tiers
+  for (const [tierKey, tierGames] of Object.entries(tiers)) {
+    const tierIndex = tierGames.findIndex(game => game.id === gameId)
+    if (tierIndex !== -1) {
+      return { game: tierGames[tierIndex], container: tierKey, index: tierIndex }
+    }
+  }
+
+  return { game: null, container: '', index: -1 }
+}
+
+// Helper function to check if two games are in the same container
+const areInSameContainer = (activeId: number, overId: number, availableGames: Game[], tiers: TierData): string | null => {
+  // Check if both are in available games
+  const activeInAvailable = availableGames.some(game => game.id === activeId)
+  const overInAvailable = availableGames.some(game => game.id === overId)
+  
+  if (activeInAvailable && overInAvailable) {
+    return 'available'
+  }
+
+  // Check if both are in the same tier
+  for (const [tierKey, tierGames] of Object.entries(tiers)) {
+    const activeInTier = tierGames.some(game => game.id === activeId)
+    const overInTier = tierGames.some(game => game.id === overId)
+    
+    if (activeInTier && overInTier) {
+      return tierKey
+    }
+  }
+
+  return null
 }
 
 export default function Home() {
@@ -33,250 +76,136 @@ export default function Home() {
   const [tierColors, setTierColors] = useState<Record<string, string>>({})
   const tierListRef = useRef<HTMLDivElement>(null)
 
-  const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event
-    const gameId = Number(active.id)
-    
-    // Find the game in available games or in any tier
-    let game = availableGames.find((g: Game) => g.id === gameId)
-    if (!game) {
-      for (const tierGames of Object.values(tiers)) {
-        game = tierGames.find((g: Game) => g.id === gameId)
-        if (game) break
-      }
-    }
-    setActiveGame(game || null)
-  }
+  // Handle drag start - find and set the active game
+  const handleDragStart = useCallback((event: DragStartEvent) => {
+    const gameId = Number(event.active.id)
+    const { game } = findGameById(gameId, availableGames, tiers)
+    setActiveGame(game)
+  }, [availableGames, tiers])
 
-  const handleDragEnd = (event: DragEndEvent) => {
+  // Handle reordering games within the same container
+  const handleReorder = useCallback((activeId: number, overId: number, container: string) => {
+    if (container === 'available') {
+      setAvailableGames(prev => {
+        const oldIndex = prev.findIndex(game => game.id === activeId)
+        const newIndex = prev.findIndex(game => game.id === overId)
+        return arrayMove(prev, oldIndex, newIndex)
+      })
+    } else {
+      setTiers(prev => {
+        const tierGames = prev[container as keyof TierData]
+        const oldIndex = tierGames.findIndex(game => game.id === activeId)
+        const newIndex = tierGames.findIndex(game => game.id === overId)
+        
+        return {
+          ...prev,
+          [container]: arrayMove(tierGames, oldIndex, newIndex)
+        }
+      })
+    }
+  }, [])
+
+  // Handle moving game between different containers
+  const handleMove = useCallback((activeId: number, sourceContainer: string, targetContainer: string, targetPosition?: number) => {
+    const { game } = findGameById(activeId, availableGames, tiers)
+    if (!game) return
+
+    // Remove from source
+    if (sourceContainer === 'available') {
+      setAvailableGames(prev => prev.filter(g => g.id !== activeId))
+    } else {
+      setTiers(prev => ({
+        ...prev,
+        [sourceContainer]: prev[sourceContainer as keyof TierData].filter(g => g.id !== activeId)
+      }))
+    }
+
+    // Add to target
+    if (targetContainer === 'available') {
+      setAvailableGames(prev => [...prev, game])
+    } else {
+      setTiers(prev => {
+        const targetGames = [...prev[targetContainer as keyof TierData]]
+        if (targetPosition !== undefined) {
+          targetGames.splice(targetPosition, 0, game)
+        } else {
+          targetGames.push(game)
+        }
+        
+        return {
+          ...prev,
+          [targetContainer]: targetGames
+        }
+      })
+    }
+  }, [availableGames, tiers])
+
+  // Main drag end handler - simplified with helper functions
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
     const { active, over } = event
     setActiveGame(null)
 
     if (!over) return
 
     const activeId = Number(active.id)
-    const overId = over.id
-
-    // Find source location
-    let sourceContainer = 'available'
-    let sourceIndex = availableGames.findIndex(game => game.id === activeId)
-    
-    if (sourceIndex === -1) {
-      for (const [tierKey, tierGames] of Object.entries(tiers)) {
-        const index = tierGames.findIndex((game: Game) => game.id === activeId)
-        if (index !== -1) {
-          sourceContainer = tierKey
-          sourceIndex = index
-          break
-        }
-      }
-    }
-
-    // Check if we're sorting within containers
+    const overId = Number(over.id)
     const activeData = active.data.current
     const overData = over.data.current
+    const { container: sourceContainer } = findGameById(activeId, availableGames, tiers)
 
+    // Handle game-to-game sorting (reordering within same container)
     if (activeData?.type === 'game' && overData?.type === 'game') {
-      console.log('Sorting games - activeId:', activeId, 'overId:', overId)
+      const sameContainer = areInSameContainer(activeId, overId, availableGames, tiers)
       
-      // Check if both games are in available games
-      const activeInAvailable = availableGames.some((game: Game) => game.id === activeId)
-      const overInAvailable = availableGames.some((game: Game) => game.id === Number(overId))
-      
-      if (activeInAvailable && overInAvailable) {
-        console.log('Sorting within available games')
-        // Reorder within available games
-        setAvailableGames(prev => {
-          const oldIndex = prev.findIndex((game: Game) => game.id === activeId)
-          const newIndex = prev.findIndex((game: Game) => game.id === Number(overId))
-          return arrayMove(prev, oldIndex, newIndex)
-        })
+      if (sameContainer) {
+        handleReorder(activeId, overId, sameContainer)
         return
       }
 
-      // Find which tier both games are in
-      let tierKey = ''
-      for (const [key, tierGames] of Object.entries(tiers)) {
-        if (tierGames.some((game: Game) => game.id === activeId) && tierGames.some((game: Game) => game.id === Number(overId))) {
-          tierKey = key
-          break
-        }
-      }
-
-      if (tierKey) {
-        console.log('Sorting within tier:', tierKey)
-        // Reorder within the same tier
-        setTiers(prev => {
-          const tierGames = prev[tierKey as keyof TierData]
-          const oldIndex = tierGames.findIndex((game: Game) => game.id === activeId)
-          const newIndex = tierGames.findIndex((game: Game) => game.id === Number(overId))
-          
-          return {
-            ...prev,
-            [tierKey]: arrayMove(tierGames, oldIndex, newIndex)
-          }
-        })
+      // Handle moving between different containers with positioning
+      const { container: targetContainer } = findGameById(overId, availableGames, tiers)
+      if (sourceContainer && targetContainer && sourceContainer !== targetContainer) {
+        const targetGames = targetContainer === 'available' ? availableGames : tiers[targetContainer as keyof TierData]
+        const targetIndex = targetGames.findIndex(game => game.id === overId)
+        handleMove(activeId, sourceContainer, targetContainer, targetIndex)
         return
       }
-
-      // Check if dragging from one tier to another tier (game to game)
-      let sourceTier = ''
-      let targetTier = ''
-      
-      // Find source tier
-      for (const [key, tierGames] of Object.entries(tiers)) {
-        if (tierGames.some((game: Game) => game.id === activeId)) {
-          sourceTier = key
-          break
-        }
-      }
-      
-      // Find target tier
-      for (const [key, tierGames] of Object.entries(tiers)) {
-        if (tierGames.some((game: Game) => game.id === Number(overId))) {
-          targetTier = key
-          break
-        }
-      }
-      
-      if (sourceTier && targetTier && sourceTier !== targetTier) {
-        console.log('Moving from tier', sourceTier, 'to tier', targetTier)
-        const activeGame = [...availableGames, ...Object.values(tiers).flat()].find((game: Game) => game.id === activeId)
-        if (activeGame) {
-          setTiers(prev => {
-            const targetGames = prev[targetTier as keyof TierData]
-            const targetIndex = targetGames.findIndex((game: Game) => game.id === Number(overId))
-            
-            // Remove from source tier
-            const newSourceGames = prev[sourceTier as keyof TierData].filter((game: Game) => game.id !== activeId)
-            
-            // Insert into target tier at the target position
-            const newTargetGames = [...targetGames]
-            newTargetGames.splice(targetIndex, 0, activeGame)
-            
-            return {
-              ...prev,
-              [sourceTier]: newSourceGames,
-              [targetTier]: newTargetGames
-            }
-          })
-          return
-        }
-      }
     }
 
-    // Handle dragging from available games to tier (game to game)
-    if (activeData?.type === 'game' && overData?.type === 'game') {
-      const activeInAvailable = availableGames.some((game: Game) => game.id === activeId)
-      let targetTier = ''
-      
-      // Find target tier
-      for (const [key, tierGames] of Object.entries(tiers)) {
-        if (tierGames.some((game: Game) => game.id === Number(overId))) {
-          targetTier = key
-          break
-        }
-      }
-      
-      if (activeInAvailable && targetTier) {
-        console.log('Moving from available to tier', targetTier)
-        const activeGame = availableGames.find((game: Game) => game.id === activeId)
-        if (activeGame) {
-          const targetGames = tiers[targetTier as keyof TierData]
-          const targetIndex = targetGames.findIndex((game: Game) => game.id === Number(overId))
-          
-          // Remove from available games
-          setAvailableGames(prev => prev.filter((game: Game) => game.id !== activeId))
-          
-          // Insert into target tier at the target position
-          setTiers(prev => {
-            const newTargetGames = [...prev[targetTier as keyof TierData]]
-            newTargetGames.splice(targetIndex, 0, activeGame)
-            
-            return {
-              ...prev,
-              [targetTier]: newTargetGames
-            }
-          })
-          return
-        }
-      }
+    // Handle dropping on tier containers (simpler case)
+    const targetContainer = typeof over.id === 'string' ? over.id : over.id.toString()
+    if (sourceContainer && targetContainer !== sourceContainer) {
+      handleMove(activeId, sourceContainer, targetContainer)
     }
+  }, [availableGames, tiers, handleReorder, handleMove])
 
-    // Handle moving between containers (original logic)
-    const destinationContainer = typeof overId === 'string' ? overId : overId.toString()
-
-    // Get the dragged game
-    const draggedGame = sourceContainer === 'available' 
-      ? availableGames[sourceIndex]
-      : tiers[sourceContainer as keyof TierData][sourceIndex]
-
-    if (!draggedGame) {
-      console.error('Dragged game not found:', { activeId, sourceContainer, sourceIndex })
-      return
-    }
-
-    console.log('Moving game between containers:', {
-      game: draggedGame.name,
-      from: sourceContainer,
-      to: destinationContainer
-    })
-
-    // Remove from source
-    if (sourceContainer === 'available') {
-      setAvailableGames(prev => prev.filter(game => game.id !== activeId))
-    } else {
-      setTiers(prev => ({
-        ...prev,
-        [sourceContainer]: prev[sourceContainer as keyof TierData].filter(game => game.id !== activeId)
-      }))
-    }
-
-    // Add to destination
-    if (destinationContainer === 'available') {
-      console.log('Adding game back to available games')
-      setAvailableGames(prev => [...prev, draggedGame])
-    } else if (destinationContainer in tiers) {
-      console.log('Adding game to tier:', destinationContainer)
-      setTiers(prev => ({
-        ...prev,
-        [destinationContainer]: [...(prev[destinationContainer as keyof TierData] || []), draggedGame]
-      }))
-    } else {
-      console.error('Unknown destination container:', destinationContainer)
-      // If destination is unknown, put the game back to available games to prevent loss
-      setAvailableGames(prev => [...prev, draggedGame])
-    }
-  }
-
-  const resetTierList = () => {
+  // Reset tier list to initial state
+  const resetTierList = useCallback(() => {
     setTiers(initialTiers)
     setAvailableGames(steamGames)
-  }
+  }, [])
 
-  const handleImportSteam = () => {
-    setShowSteamImport(true)
-  }
+  // Modal handlers
+  const handleImportSteam = useCallback(() => setShowSteamImport(true), [])
+  const handleAbout = useCallback(() => setShowAbout(true), [])
 
-  const handleAbout = () => {
-    setShowAbout(true)
-  }
-
-  const handleGamesImported = (games: Game[]) => {
+  // Import handlers
+  const handleGamesImported = useCallback((games: Game[]) => {
     setAvailableGames(games)
     setTiers(initialTiers) // Reset tiers when importing new games
-  }
+  }, [])
 
-  const handleGamesReturnToAvailable = (games: Game[]) => {
+  const handleGamesReturnToAvailable = useCallback((games: Game[]) => {
     setAvailableGames(prev => [...prev, ...games])
-  }
+  }, [])
 
-  const handleTierColorChange = (tierKey: string, color: string) => {
+  // Tier customization
+  const handleTierColorChange = useCallback((tierKey: string, color: string) => {
     setTierColors(prev => ({
       ...prev,
       [tierKey]: color
     }))
-  }
+  }, [])
 
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>

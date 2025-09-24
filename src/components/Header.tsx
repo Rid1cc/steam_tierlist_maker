@@ -4,6 +4,7 @@ interface HeaderProps {
   onAbout: () => void
 }
 
+// Main header component with animated logo and action buttons
 export default function Header({ onReset, onImportSteam, onAbout }: HeaderProps) {
   return (
     <header className="bg-steam-darkblue border-b-2 border-steam-lightblue">

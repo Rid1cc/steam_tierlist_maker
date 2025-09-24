@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export const runtime = 'edge';
 
+// Steam Family App data structure from API
 interface FamilyApp {
   appid: number
   name: string
@@ -14,6 +15,7 @@ interface FamilyApp {
   free_weekend_id?: number
 }
 
+// Steam API response structure
 interface FamilyAppsResponse {
   response: {
     apps: FamilyApp[]

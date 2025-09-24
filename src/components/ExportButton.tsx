@@ -1,11 +1,13 @@
+import { useCallback } from 'react'
 import html2canvas from 'html2canvas'
 
 interface ExportButtonProps {
   tierListRef: React.RefObject<HTMLDivElement | null>
 }
 
+// Export tier list as PNG image
 export default function ExportButton({ tierListRef }: ExportButtonProps) {
-  const handleExport = async () => {
+  const handleExport = useCallback(async () => {
     if (!tierListRef.current) return
 
     try {
@@ -33,7 +35,7 @@ export default function ExportButton({ tierListRef }: ExportButtonProps) {
       link.click()
       document.body.removeChild(link)
 
-      console.log('Tier list exported successfully!')
+      // Export completed successfully
     } catch (error) {
       console.error('Error exporting tier list:', error)
       alert('Failed to export tier list. Please try again.')
@@ -45,7 +47,7 @@ export default function ExportButton({ tierListRef }: ExportButtonProps) {
         button.removeAttribute('disabled')
       }
     }
-  }
+  }, [tierListRef])
 
   return (
     <button

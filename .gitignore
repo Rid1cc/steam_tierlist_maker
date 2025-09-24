@@ -3,6 +3,7 @@ public
 .wrangler
 _headers
 wrangler.toml
+deploy.sh
 
 # Dependencies
 node_modules/
