@@ -20,13 +20,12 @@ interface FamilyAppsResponse {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const webApiToken = searchParams.get('webApiToken')
-    const familyGroupId = searchParams.get('familyGroupId') || '0'
+    const body = await request.json()
+    const { webApiToken, familyGroupId = '0' } = body
     
-    console.log(`[STEAM FAMILY API] GET /api/steam/family - familyGroupId: ${familyGroupId}`)
+    console.log(`[STEAM FAMILY API] POST /api/steam/family - familyGroupId: ${familyGroupId}`)
     
     if (!webApiToken) {
       console.log('[STEAM FAMILY API] Error: Web API token is required')
@@ -36,7 +35,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    console.log(`[STEAM FAMILY API] Fetching family games directly from Steam API`)
+    console.log(`[STEAM FAMILY API] Fetching family games from Steam API`)
 
     // Fetch family shared games from Steam API
     const steamApiUrl = `https://api.steampowered.com/IFamilyGroupsService/GetSharedLibraryApps/v1/?access_token=${webApiToken}&family_groupid=${familyGroupId}&include_own=true&include_excluded=false&include_free=true&include_non_games=false`

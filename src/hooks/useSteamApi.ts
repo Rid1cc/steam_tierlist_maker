@@ -157,7 +157,16 @@ export function useSteamApi(): UseSteamApiReturn {
 
     const requestPromise = (async () => {
       try {
-        const response = await fetch(`/api/steam/family?webApiToken=${encodeURIComponent(webApiToken)}&familyGroupId=${encodeURIComponent(familyGroupId)}`)
+        const response = await fetch('/api/steam/family', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            webApiToken,
+            familyGroupId
+          })
+        })
         const data = await response.json()
 
         if (!response.ok) {

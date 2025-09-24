@@ -7,6 +7,7 @@ import TierList from '@/components/TierList'
 import GameLibrary from '@/components/GameLibrary'
 import SteamImport from '@/components/SteamImport'
 import ExportButton from '@/components/ExportButton'
+import AboutModal from '@/components/AboutModal'
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, DragOverEvent } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { steamGames } from '@/data/steamGames'
@@ -27,6 +28,7 @@ export default function Home() {
   const [availableGames, setAvailableGames] = useState<Game[]>(steamGames)
   const [activeGame, setActiveGame] = useState<Game | null>(null)
   const [showSteamImport, setShowSteamImport] = useState(false)
+  const [showAbout, setShowAbout] = useState(false)
   const [tierListName, setTierListName] = useState('My Steam Tier List')
   const [tierColors, setTierColors] = useState<Record<string, string>>({})
   const tierListRef = useRef<HTMLDivElement>(null)
@@ -256,6 +258,10 @@ export default function Home() {
     setShowSteamImport(true)
   }
 
+  const handleAbout = () => {
+    setShowAbout(true)
+  }
+
   const handleGamesImported = (games: Game[]) => {
     setAvailableGames(games)
     setTiers(initialTiers) // Reset tiers when importing new games
@@ -275,7 +281,7 @@ export default function Home() {
   return (
     <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
       <main className="min-h-screen">
-        <Header onReset={resetTierList} onImportSteam={handleImportSteam} />
+        <Header onReset={resetTierList} onImportSteam={handleImportSteam} onAbout={handleAbout} />
         <div className="container mx-auto px-4 py-8">
           {/* Settings and Export */}
           <div className="mb-6 flex justify-between items-center">
@@ -328,6 +334,13 @@ export default function Home() {
         />
       )}
       
+      {/* About Modal */}
+      {showAbout && (
+        <AboutModal
+          onClose={() => setShowAbout(false)}
+        />
+      )}
+      
       {/* Footer */}
       <footer className="mt-8 py-6 border-t border-steam-lightblue/20">
         <div className="container mx-auto px-4 text-center">
@@ -343,11 +356,33 @@ export default function Home() {
             </a>
           </p>
           <p className="text-steam-lightblue/40 text-xs mt-1">
-            Steam Tierlist Maker • {new Date().getFullYear()}
+            Open source project • {new Date().getFullYear()}
           </p>
-          <p className="text-steam-lightblue/30 text-xs mt-2">
-            All game data and images are property of Valve Corporation and Steam®
-          </p>
+          <div className="text-steam-lightblue/30 text-xs mt-3 space-y-1">
+            <p>
+              Powered by{' '}
+              <a 
+                href="https://steamcommunity.com/dev" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-steam-blue hover:text-steam-lightblue transition-colors"
+              >
+                Steam Web API
+              </a>
+            </p>
+            <p>
+              Steam and the Steam logo are trademarks of{' '}
+              <a 
+                href="https://www.valvesoftware.com" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-steam-blue hover:text-steam-lightblue transition-colors"
+              >
+                Valve Corporation
+              </a>
+            </p>
+            <p>This application is not affiliated with Valve Corporation</p>
+          </div>
         </div>
       </footer>
     </DndContext>
