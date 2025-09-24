@@ -57,3 +57,31 @@ body {
     @apply bg-steam-blue border border-steam-lightblue rounded-lg shadow-lg;
   }
 }
+
+/* Animated gradient for Ridicc name */
+@keyframes gradient-x {
+  0%, 100% {
+    background-size: 200% 200%;
+    background-position: left center;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: right center;
+  }
+}
+
+.gradient-ridicc {
+  background: linear-gradient(-45deg, #8b5cf6, #f97316, #ec4899, #8b5cf6);
+  background-size: 400% 400%;
+  animation: gradient-x 3s ease infinite;
+}
+
+.ridicc-name:hover {
+  background: linear-gradient(-45deg, #8b5cf6, #f97316, #ec4899, #8b5cf6);
+  background-size: 400% 400%;
+  animation: gradient-x 3s ease infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}

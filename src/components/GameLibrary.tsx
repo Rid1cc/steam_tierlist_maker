@@ -1,6 +1,7 @@
 import { useDroppable } from '@dnd-kit/core'
+import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable'
 import { Game } from '@/types/game'
-import GameItem from './GameItem'
+import SortableGameItem from './SortableGameItem'
 
 interface GameLibraryProps {
   games: Game[]
@@ -25,9 +26,11 @@ export default function GameLibrary({ games }: GameLibraryProps) {
               : 'border-steam-lightblue bg-steam-darkblue bg-opacity-50'
           }`}
         >
-          {games.map((game) => (
-            <GameItem key={game.id} game={game} />
-          ))}
+          <SortableContext items={games.map(game => game.id)} strategy={rectSortingStrategy}>
+            {games.map((game) => (
+              <SortableGameItem key={game.id} game={game} />
+            ))}
+          </SortableContext>
           {games.length === 0 && (
             <div className="w-full text-center text-gray-400 py-8">
               <p className="text-lg">All games have been ranked!</p>

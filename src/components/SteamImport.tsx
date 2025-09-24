@@ -200,19 +200,9 @@ export default function SteamImport({ onGamesImported, onClose }: SteamImportPro
               </>
             ) : (
               <>
-                <h4 className="font-bold mb-2">Family Sharing Import Instructions:</h4>
-                <ol className="list-decimal list-inside space-y-1">
-                  <li>Log into Steam in your web browser</li>
-                  <li>Open: <code className="bg-gray-700 px-1 rounded">store.steampowered.com/pointssummary/ajaxgetasyncconfig</code></li>
-                  <li>Find and copy the <code className="bg-gray-700 px-1 rounded">webapi_token</code> value</li>
-                  <li>Paste it above and click Import</li>
-                </ol>
                 <div className="mt-3 space-y-2">
                   <p className="text-green-400">
                     ✅ This method includes ALL games (owned + family shared)
-                  </p>
-                  <p className="text-yellow-400">
-                    ⚠️ Requires manual token extraction from Steam
                   </p>
                 </div>
               </>

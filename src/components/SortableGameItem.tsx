@@ -1,19 +1,21 @@
-import { useDraggable } from '@dnd-kit/core'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 import { Game } from '@/types/game'
 import GameImage from './GameImage'
 
-interface GameItemProps {
+interface SortableGameItemProps {
   game: Game
 }
 
-export default function GameItem({ game }: GameItemProps) {
+export default function SortableGameItem({ game }: SortableGameItemProps) {
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
+    transition,
     isDragging,
-  } = useDraggable({
+  } = useSortable({
     id: game.id,
     data: {
       type: 'game',
@@ -21,16 +23,17 @@ export default function GameItem({ game }: GameItemProps) {
     },
   })
 
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  }
+
   const handleDragStart = (event: React.DragEvent) => {
     // Create empty/transparent drag image to hide native drag preview
     const img = new Image()
     img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs='
     event.dataTransfer.setDragImage(img, 0, 0)
   }
-
-  const style = transform ? {
-    transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-  } : undefined
 
   return (
     <div

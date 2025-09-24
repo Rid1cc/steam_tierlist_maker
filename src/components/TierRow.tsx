@@ -1,6 +1,7 @@
 import { useDroppable } from '@dnd-kit/core'
+import { SortableContext, horizontalListSortingStrategy } from '@dnd-kit/sortable'
 import { Game, TierKey } from '@/types/game'
-import GameItem from './GameItem'
+import SortableGameItem from './SortableGameItem'
 
 interface TierRowProps {
   tier: TierKey
@@ -45,9 +46,11 @@ export default function TierRow({ tier, games }: TierRowProps) {
         }`}
         style={{ minHeight: '120px' }}
       >
-        {games.map((game) => (
-          <GameItem key={game.id} game={game} />
-        ))}
+        <SortableContext items={games.map(game => game.id)} strategy={horizontalListSortingStrategy}>
+          {games.map((game) => (
+            <SortableGameItem key={game.id} game={game} />
+          ))}
+        </SortableContext>
         {games.length === 0 && (
           <p className="text-gray-400 text-sm self-center">
             Drag games here to rank them as {tierLabels[tier]}
